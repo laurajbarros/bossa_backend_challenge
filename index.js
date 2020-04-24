@@ -1,8 +1,17 @@
 const express = require('express');
-const api = express();
+const app = express();
 const mongoose = require('mongoose');
 const db = require('./config/keys').mongoURI;
-require('dotenv').config();
+const apiRouter = require('./routes/api');
+const bodyParser = require('body-parser');
+
+
+//============================
+// CONFIG: Environment Variables
+//============================
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 //============================
 // CONFIG: DB
@@ -12,10 +21,17 @@ mongoose
   .then(() => console.log('Connected to MongoDB successfully'))
   .catch(err => console.log(err));
 
+  //============================
+  // Route Prefixes
+  //============================
+  app.use(bodyParser.json({type:'application/json'}));
+  app.use("/api/", apiRouter);
 //============================
 // Server listener
 //============================
 const PORT = process.env.PORT || 3000;
-api.listen(PORT, function(){
+app.listen(PORT, function(){
   console.log('API is listening on port', PORT );
 });
+
+module.exports = app;
