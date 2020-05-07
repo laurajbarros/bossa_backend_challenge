@@ -32,12 +32,11 @@ exports.listTools = [
 exports.getToolById = [
 	function (req, res) {
 		try {
-			console.log(req.params)
-			Tools.find(req.query).then((tools)=>{
-				if(tools.length > 0){
-					return apiResponse.successResponseWithData(res, "Operation completed with success", tools);
-				}else{
-					return apiResponse.successResponseWithData(res, "Operation completed with success", "0 tools in storage");
+			Tools.findById(req.params.id, (err, foundTool) => {
+				if(err){
+					return apiResponse.successResponseWithData(res, "Operation completed with success", "0 tools in storage with this Id");
+				} else {
+					return apiResponse.successResponseWithData(res, "Operation completed with success", foundTool);
 				}
 			});
 		} catch (err) {

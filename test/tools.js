@@ -43,8 +43,7 @@ describe("Tool", () => {
 	});
 
   describe("/POST tool", () => {
-		it("should not create a tool if title is missing", (done) => {
-
+		it("should not POST a tool without title", (done) => {
       const missingData = {
     		"description":"GitHub is a Git repository hosting service, but it adds many of its own features. While Git is a command line tool, GitHub provides a Web-based graphical interface. It also provides access control and several collaboration features, such as a wikis and basic task management tools for every project",
     		"link":"www.github.com",
@@ -77,8 +76,8 @@ describe("Tool", () => {
 	});
 
 
-  describe("/GET All tools", () => {
-		it("lists all tools", (done) => {
+  describe("/GET tools", () => {
+		it("should lists all tools", (done) => {
 			chai.request(server)
 				.get("/api/tools")
 				.end((err, res) => {
@@ -91,6 +90,20 @@ describe("Tool", () => {
 				});
 		});
 	});
+
+  describe("/GET/:id tool", () => {
+    it("should get tool by the given Id", (done) => {
+      chai.request(server)
+        .get("/api/tools/" + sampleData._id)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.data.should.be.a('object');
+          res.body.data.should.have.property("_id").eql(sampleData._id);
+          res.body.should.have.property("message").eql("Operation completed with success");
+          done();
+        });
+    });
+  });
 
 
   describe("/GET tools with search query", () => {
