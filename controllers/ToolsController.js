@@ -2,7 +2,6 @@ const Tools = require("../models/ToolsModel");
 const { body,validationResult } = require("express-validator");
 const apiResponse = require("../helpers/apiResponse");
 var mongoose = require("mongoose");
-// mongoose.set("useFindAndModify", false);
 
 // Tools Schema
 function ToolsData(data) {
@@ -16,6 +15,24 @@ function ToolsData(data) {
 exports.listTools = [
 	function (req, res) {
 		try {
+			Tools.find(req.query).then((tools)=>{
+				if(tools.length > 0){
+					return apiResponse.successResponseWithData(res, "Operation completed with success", tools);
+				}else{
+					return apiResponse.successResponseWithData(res, "Operation completed with success", "0 tools in storage");
+				}
+			});
+		} catch (err) {
+			//throw error in json response with status 500.
+			return apiResponse.ErrorResponse(res, err);
+		}
+	}
+];
+
+exports.getToolById = [
+	function (req, res) {
+		try {
+			console.log(req.params)
 			Tools.find(req.query).then((tools)=>{
 				if(tools.length > 0){
 					return apiResponse.successResponseWithData(res, "Operation completed with success", tools);

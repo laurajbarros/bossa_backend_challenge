@@ -23,19 +23,59 @@ describe("Tool", () => {
     "tags": ["repository","collaboration"]
 	};
 
-  describe("/POST Create New tool", () => {
-		it("creates a new tool", (done) => {
+  describe("/POST tool", () => {
+		it("should create a new tool", (done) => {
 			chai.request(server)
 				.post("/api/tools")
         .set('Content-Type', 'application/json')
 				.send(sampleData)
 				.end((err, res) => {
 					res.should.have.status(201);
-					res.body.should.have.property("message").eql("New Tool added with Success.");
+          res.body.should.have.property("message").eql("New Tool added with Success.");
+          res.body.data.should.have.property('title');
+          res.body.data.should.have.property('link');
+          res.body.data.should.have.property('description');
+          res.body.data.should.have.property('tags');
+          res.body.data.should.have.property('id');
 					done();
 				});
 		});
 	});
+
+  describe("/POST tool", () => {
+		it("should not create a tool if title is missing", (done) => {
+
+      const missingData = {
+    		"description":"GitHub is a Git repository hosting service, but it adds many of its own features. While Git is a command line tool, GitHub provides a Web-based graphical interface. It also provides access control and several collaboration features, such as a wikis and basic task management tools for every project",
+    		"link":"www.github.com",
+        "tags": ["repository","collaboration"]
+    	};
+			chai.request(server)
+				.post("/api/tools")
+        .set('Content-Type', 'application/json')
+				.send(missingData)
+				.end((err, res) => {
+					res.should.have.status(400);
+					res.body.should.have.property("message").eql("Validation Error.");
+					done();
+				});
+		});
+	});
+
+  describe("/POST tool", () => {
+		it("should not create a tool if it exists already in db with same title", (done) => {
+			chai.request(server)
+				.post("/api/tools")
+        .set('Content-Type', 'application/json')
+				.send(sampleData)
+				.end((err, res) => {
+					res.should.have.status(400);
+					res.body.should.have.property("message").eql("Validation Error.");
+					done();
+				});
+		});
+	});
+
 
   describe("/GET All tools", () => {
 		it("lists all tools", (done) => {
@@ -43,13 +83,16 @@ describe("Tool", () => {
 				.get("/api/tools")
 				.end((err, res) => {
 					res.should.have.status(200);
+					res.body.data.should.be.a('array');
+					res.body.data.length.should.be.eql(1);
 					res.body.should.have.property("message").eql("Operation completed with success");
 					sampleData._id = res.body.data[0]._id;
 					done();
 				});
 		});
 	});
-  
+
+
   describe("/GET tools with search query", () => {
 		it("lists all tools that have repository tag", (done) => {
 			chai.request(server)

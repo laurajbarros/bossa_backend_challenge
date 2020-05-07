@@ -5,7 +5,6 @@ const db = require('./config/keys').mongoURI;
 const apiRouter = require('./routes/api');
 const bodyParser = require('body-parser');
 
-
 //============================
 // CONFIG: Environment Variables
 //============================
@@ -19,11 +18,24 @@ mongoose
   .then(() => console.log('Connected to MongoDB successfully'))
   .catch(err => console.log(err));
 
-  //============================
-  // Route Prefixes
-  //============================
+//============================
+// Route Prefixes
+//============================
+//parse application/json and looks for raw text
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(bodyParser.text());
   app.use(bodyParser.json({type:'application/json'}));
   app.use("/api/", apiRouter);
+
+//============================
+// Basic Routing
+//============================
+const message = {
+  message:"Welcome to VUTTR, refer to our documentation at https://github.com/laurajbarros/vuttr_api_node_mongodb to understand how it works"
+};
+app.get("/", (req, res) => res.json(message));
+
 //============================
 // Server listener
 //============================
