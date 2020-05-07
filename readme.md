@@ -24,11 +24,17 @@ Lists all tools that are stored in DB, following the Schema:
   description: {type: String, required:true},
   tags: {type: Array, required:false}
 
-## List Tools Filter/Search
+## Finds Tool/Tools by Query
 
-### Endpoint: GET 'api/tools/q={name="github"}'
+### Endpoint: GET 'api/tools/q=query'
 
-q= can be changed to query any of the following fields => id, title, link, description, tags  
+q= can be changed to query any of the following fields => title, link, description, tags  
+
+## Finds Tool by id
+
+### Endpoint: GET 'api/tools/:id'
+
+If there is a tool with such Id, returns it
 
 ## Post new Tool
 
@@ -75,8 +81,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 ## Improvements on queue
 
   - Authentication
-  - Expanded Testing
-
+  
 ## Credits
 
 Project done by me Laura J Barros for a Challenge that required an API built
